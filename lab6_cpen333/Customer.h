@@ -17,6 +17,8 @@ class Customer : public cpen333::thread::thread_object {
   Menu& menu_;
   int id_;
   int numDishes = 0;
+  std::mutex m;
+  std::condition_variable cv;
 
  public:
   /**
@@ -46,9 +48,11 @@ class Customer : public cpen333::thread::thread_object {
     // TODO: Notify main method that order is ready
     //==================================================
 	  //server calls customer.serve(), so in this function set a status variable
+	  std::unique_lock<std::mutex> lk(m);
 	  numDishes--;
-	  safe_printf("Customer %d is being served %d \n", order.customer_id, order.item_id);
-	  //std::cout << "customer: " << order.customer_id << " is being served " << order.item_id  << ". numDishes left: " << numDishes << std::endl;
+	  lk.unlock();
+	  safe_printf("Customer %d is being served %d, numDishes = %d \n", order.customer_id, order.item_id, numDishes);
+	  cv.notify_one();
   }
 
   /**
@@ -97,11 +101,17 @@ class Customer : public cpen333::thread::thread_object {
 
     // stay for some time
     std::this_thread::sleep_for(std::chrono::seconds(5));
-	//std::cout << "numDishes at end: " << numDishes << std::endl;
 	
-	while(numDishes > 0){
-		safe_printf("Customer %d still eating.\n", id_);
+	//std::thread worker(serve, order);
+
+	{
+		std::unique_lock<std::mutex> lk(m);
+		cv.wait(lk, [&] {return numDishes == 0; });
 	}
+
+	/*while(numDishes > 0){
+		safe_printf("Customer %d still eating.\n", id_);
+	}*/
 	
 
 	safe_printf("Customer %d paying $%.2f and leaving.\n", id_, cost);
