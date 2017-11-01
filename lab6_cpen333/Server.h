@@ -51,7 +51,7 @@ class Server : public cpen333::thread::thread_object {
     //==================================================
     Order order = queue_.get();
     while (true) {
-
+	  if (order.customer_id == 5798 || order.item_id == 5798) break;
       // serve order
       safe_printf("Server %d serving {%d,%d}\n", id_, order.customer_id, order.item_id);
 
@@ -65,7 +65,6 @@ class Server : public cpen333::thread::thread_object {
 
       // next order
       order = queue_.get();
-	  //if order.poison_pill == true then go to sleep
     }
 
     safe_printf("Server %d done.\n", id_);

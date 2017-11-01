@@ -30,12 +30,12 @@ int main() {
 	//    - CircularOrderQueue
 	//    - DynamicOrderQueue
 	//============================================
-	SingleOrderQueue order_queue;
-	SingleOrderQueue serve_queue;
+//	SingleOrderQueue order_queue;
+//	SingleOrderQueue serve_queue;
 //	CircularOrderQueue order_queue;
 //	CircularOrderQueue serve_queue;
-//	DynamicOrderQueue order_queue;
-//	DynamicOrderQueue serve_queue;
+	DynamicOrderQueue order_queue;
+	DynamicOrderQueue serve_queue;
 
 	for (int i = 0; i<nchefs; ++i) {
 		chefs.push_back(new Chef(i, order_queue, serve_queue));
@@ -68,7 +68,9 @@ int main() {
 	//==================================================
 	// TODO: Signal all chefs to leave
 	//==================================================
-
+	for (int i = 0; i < nchefs; i++) {
+		order_queue.add({ 5798, 5798 });
+	}
 	// wait for all chefs to leave
 	for (auto& chef : chefs) {
 		chef->join();
@@ -77,7 +79,9 @@ int main() {
 	//==================================================
 	// TODO: Signal all servers to leave
 	//==================================================
-
+	for (int i = 0; i < nservers; i++) {
+		serve_queue.add({ 5798, 5798 });
+	}
 	// wait for all servers to leave
 	for (auto& server : servers) {
 		server->join();

@@ -46,7 +46,7 @@ class Chef : public cpen333::thread::thread_object {
     //==================================================
     Order order = orders_.get();
     while (true) {
-	  
+	  if (order.customer_id == 5798 || order.item_id == 5798) break;
       // process order
       safe_printf("Chef %d starting order {%d,%d}\n", id_, order.customer_id, order.item_id);
       std::this_thread::sleep_for(std::chrono::seconds(5));
@@ -56,8 +56,7 @@ class Chef : public cpen333::thread::thread_object {
       serve_.add(order);
 
       // next order
-      order = orders_.get();
-	  //if order.poison_pill == true then end
+      order = orders_.get();	  
     }
     safe_printf("Chef %d done\n", id_);
 
