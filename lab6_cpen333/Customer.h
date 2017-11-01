@@ -16,6 +16,7 @@ class Customer : public cpen333::thread::thread_object {
   OrderQueue& queue_;
   Menu& menu_;
   int id_;
+  int numDishes = 0;
 
  public:
   /**
@@ -45,6 +46,9 @@ class Customer : public cpen333::thread::thread_object {
     // TODO: Notify main method that order is ready
     //==================================================
 	  //server calls customer.serve(), so in this function set a status variable
+	  numDishes--;
+	  safe_printf("Customer %d is being served %d \n", order.customer_id, order.item_id);
+	  //std::cout << "customer: " << order.customer_id << " is being served " << order.item_id  << ". numDishes left: " << numDishes << std::endl;
   }
 
   /**
@@ -70,7 +74,8 @@ class Customer : public cpen333::thread::thread_object {
 
       safe_printf("Customer %d ordering the %s (%d)\n", id_, appy.item.c_str(), appy.id);
       queue_.add({id_, appy.id}); //doesn't this already alert that order is ready? why do we need the function above?
-    }
+	  numDishes++;
+	}
 
     // main course
     s = menu_.mains().size();
@@ -81,16 +86,25 @@ class Customer : public cpen333::thread::thread_object {
 
       safe_printf("Customer %d ordering the %s (%d)\n", id_, meal.item.c_str(), meal.id);
       queue_.add({id_, meal.id});
+	  numDishes++;
     }
 
     //==================================================
     // TODO: wait for meals to be served
     //==================================================
 	//check status variable that was set in serve()
+	//wait()
+
     // stay for some time
     std::this_thread::sleep_for(std::chrono::seconds(5));
+	//std::cout << "numDishes at end: " << numDishes << std::endl;
+	
+	while(numDishes > 0){
+		safe_printf("Customer %d still eating.\n", id_);
+	}
+	
 
-    safe_printf("Customer %d paying $%.2f and leaving.\n", id_, cost);
+	safe_printf("Customer %d paying $%.2f and leaving.\n", id_, cost);
 
     return 0;
   }

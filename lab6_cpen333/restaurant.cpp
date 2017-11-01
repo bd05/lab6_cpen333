@@ -21,7 +21,8 @@ int main() {
 
 	const int nchefs = 4;
 	const int nservers = 2;
-	const int ncustomers = 30;
+	//const int ncustomers = 30;
+	const int ncustomers = 2;
 
 	//============================================
 	// TODO: Change queue types to test all three
@@ -31,10 +32,10 @@ int main() {
 	//============================================
 //	SingleOrderQueue order_queue;
 //	SingleOrderQueue serve_queue;
-	CircularOrderQueue order_queue;
-	CircularOrderQueue serve_queue;
-//	DynamicOrderQueue order_queue;
-//	DynamicOrderQueue serve_queue;
+//	CircularOrderQueue order_queue;
+//	CircularOrderQueue serve_queue;
+	DynamicOrderQueue order_queue;
+	DynamicOrderQueue serve_queue;
 
 	for (int i = 0; i<nchefs; ++i) {
 		chefs.push_back(new Chef(i, order_queue, serve_queue));

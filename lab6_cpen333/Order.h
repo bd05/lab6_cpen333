@@ -9,7 +9,6 @@ struct Order {
   int item_id;
   //bool poison_pill;
 
-  //what is the below doing?
   bool operator==(const Order& other) const {
     return ((customer_id == other.customer_id)
         && (item_id == other.item_id));

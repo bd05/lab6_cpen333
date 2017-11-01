@@ -31,10 +31,7 @@ public:
 		//    - notify others of item availability
 		//==================================================
 		std::unique_lock<std::mutex> lock(mutex_);
-		//cv_.wait(lock, [&]() { return true; }); //no condition here, right?
-
 		buff_.push_back(order);
-
 		lock.unlock();
 		cv_.notify_one();
 
@@ -50,11 +47,10 @@ public:
 		//block consumer if the queue is empty
 		// get first item in queue
 		std::unique_lock<std::mutex> lock(mutex_);
-		cv_.wait(lock, [&]() { return !buff_.empty(); }); //no condition here, right?
+		cv_.wait(lock, [&]() { return !buff_.empty(); });
 		Order out = buff_.front();
 		buff_.pop_front();
 		lock.unlock();
-		//cv_.notify_all();
 		return out;
 	}
 };
