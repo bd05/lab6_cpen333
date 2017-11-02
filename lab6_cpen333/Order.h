@@ -1,6 +1,8 @@
 #ifndef LAB6_ORDER_H
 #define LAB6_ORDER_H
 
+#define POISON_PILL_ID 5798
+
 /**
  * Basic order information containing a customer id and item id
  */

@@ -6,6 +6,8 @@
 #include "CircularOrderQueue.h"
 #include "DynamicOrderQueue.h"
 
+#define POISON_PILL_ID 5798
+
 /**
 * Main function to run the restaurant
 * @return
@@ -30,12 +32,12 @@ int main() {
 	//    - CircularOrderQueue
 	//    - DynamicOrderQueue
 	//============================================
-//	SingleOrderQueue order_queue;
-//	SingleOrderQueue serve_queue;
+	SingleOrderQueue order_queue;
+	SingleOrderQueue serve_queue;
 //	CircularOrderQueue order_queue;
 //	CircularOrderQueue serve_queue;
-	DynamicOrderQueue order_queue;
-	DynamicOrderQueue serve_queue;
+//	DynamicOrderQueue order_queue;
+//	DynamicOrderQueue serve_queue;
 
 	for (int i = 0; i<nchefs; ++i) {
 		chefs.push_back(new Chef(i, order_queue, serve_queue));
@@ -69,7 +71,7 @@ int main() {
 	// TODO: Signal all chefs to leave
 	//==================================================
 	for (int i = 0; i < nchefs; i++) {
-		order_queue.add({ 5798, 5798 });
+		order_queue.add({ POISON_PILL_ID, POISON_PILL_ID });
 	}
 	// wait for all chefs to leave
 	for (auto& chef : chefs) {

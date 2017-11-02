@@ -18,7 +18,8 @@ class Customer : public cpen333::thread::thread_object {
   int id_;
   int numDishes = 0;
   std::mutex dishesMutex;
-  std::condition_variable cv;
+  //std::condition_variable cv;
+  cpen333::thread::semaphore finishEating;
 
  public:
   /**
@@ -28,7 +29,7 @@ class Customer : public cpen333::thread::thread_object {
    * @param queue queue to place order into
    */
   Customer(int id, Menu& menu, OrderQueue& queue) :
-      id_(id), menu_(menu), queue_(queue) {}
+      id_(id), menu_(menu), queue_(queue), finishEating(0), numDishes(0) {}
 
   /**
    * Unique customer id
@@ -48,11 +49,11 @@ class Customer : public cpen333::thread::thread_object {
     // TODO: Notify main method that order is ready
     //==================================================
 	  //server calls customer.serve(), so in this function set a status variable
-	  std::unique_lock<std::mutex> numDishesLock(dishesMutex);
+	  //std::unique_lock<std::mutex> numDishesLock(dishesMutex);
 	  numDishes--;
-	  numDishesLock.unlock();
+	  //numDishesLock.unlock();
 	  safe_printf("Customer %d is being served %d, numDishes = %d \n", order.customer_id, order.item_id, numDishes);
-	  cv.notify_one();
+	  finishEating.notify();
   }
 
   /**
@@ -77,7 +78,7 @@ class Customer : public cpen333::thread::thread_object {
       ++items;
 
       safe_printf("Customer %d ordering the %s (%d)\n", id_, appy.item.c_str(), appy.id);
-      queue_.add({id_, appy.id}); //doesn't this already alert that order is ready? why do we need the function above?
+      queue_.add({id_, appy.id}); 
 	  numDishes++;
 	}
 
@@ -96,11 +97,12 @@ class Customer : public cpen333::thread::thread_object {
     //==================================================
     // TODO: wait for meals to be served
     //==================================================
-	{
+	/*{
 		std::unique_lock<std::mutex> numDishesLock(dishesMutex);
-		cv.wait(numDishesLock, [&] {return numDishes == 0; });
-	}
-
+		cv.wait(numDishesLock, [&] {return numDishes != 0; });
+	}*/
+	finishEating.wait();
+	finishEating.wait();
     // stay for some time
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
